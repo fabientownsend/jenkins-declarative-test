@@ -3,25 +3,46 @@ pipeline {
   tools {nodejs "NodeJS11"}
   stages {
 
-    stage("setup") {
+    stage("build") {
       steps {
-        sh label: 'setup', script: 'npm ci'
+        sh """
+          npm ci
+        """
       }
     }
 
-    stage("tests") {
+    stage("qa: static code analysis") { 
+      steps {
+        sh """
+          echo "qa: static code analysis"
+        """
+      }
+    }
+
+    stage("qa: unit & integration tests") {
       steps {
         sh label: 'test', script: 'npm run test'
       }
     }
 
-    stage("build") {
+    stage('approval: dev') {
+      steps {
+        script {
+          timeout(5) {
+            input "Deploy to dev?"
+          }
+        }
+      }
+    }
+
+    stage("package: dev") {
       steps {
         sh label: 'build', script: 'npm run build'
       }
     }
 
-    stage("deploy") {
+
+    stage("deploy: dev") {
       steps {
         sh label: 'deploy', script: 'npm run deploy'
       }
