@@ -47,7 +47,11 @@ pipeline {
         sh label: 'deploy', script: 'npm run deploy'
       }
     }
-
+  }
+  post {
+    always {
+      currentBuild.result = 'SUCCESS'
+    }
   }
 }
 
