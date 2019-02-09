@@ -48,10 +48,5 @@ pipeline {
       }
     }
   }
-  post {
-    always {
-      currentBuild.result = 'SUCCESS'
-    }
-  }
 }
 
