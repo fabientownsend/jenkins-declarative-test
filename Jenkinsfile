@@ -1,3 +1,5 @@
+#!/usr/bin/groovy
+
 pipeline {
   agent any
   tools {nodejs "NodeJS11"}
