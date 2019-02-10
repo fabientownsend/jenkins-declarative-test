@@ -11,20 +11,23 @@ pipeline {
       }
     }
 
-    stage("qa: static code analysis") { 
-      steps {
-        sh """
-          echo "qa: static code analysis"
-        """
+    stage("tests") { 
+      parallel {
+        stage("qa: static code analysis") { 
+          steps {
+            sh """
+              echo "qa: static code analysis"
+            """
+          }
+        }
+
+        stage("qa: unit & integration tests") {
+          steps {
+            sh label: 'test', script: 'npm run test'
+          }
+        }
       }
     }
-
-    stage("qa: unit & integration tests") {
-      steps {
-        sh label: 'test', script: 'npm run test'
-      }
-    }
-
     stage('approval: dev') {
       steps {
         script {
