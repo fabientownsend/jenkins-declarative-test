@@ -32,7 +32,7 @@ pipeline {
     }
 
     stage('Optional Steps: deploy to dev') {
-      steps { deployToDev() }
+      steps { deployTo('dev') }
     }
 
     stage('approval: stage') {
@@ -60,21 +60,22 @@ pipeline {
   }
 }
 
-def deployToDev() { // it does not need script {} as it's an external function
-  env.RELEASE_SCOPE = input(
-      id: 'userInput', message: 'Deploy to dev?', parameters: [
-      [
-      $class: 'BooleanParameterDefinition',
-      defaultValue: 'true',
-      description: 'Environment',
-      name: 'deploy to dev']
+def deployTo(environment) { // it does not need script {} as it's an external function
+  def shouldDeploy = input(
+      id: 'userInput', message: "Deploy to ${environment}?", parameters: [
+        [
+          $class: 'BooleanParameterDefinition',
+          defaultValue: 'true',
+          description: 'Environment',
+          name: "deploy to ${environment}"
+        ]
       ]
   )
 
-  if (env.RELEASE_SCOPE) {
-    sh('echo Do nothing')
-  } else {
-    sh('echo would call ./deploy.sh')
+  if (shouldDeploy) {
+    sh("echo would call ./deploy-${environment}.sh")
       // sh('./deploy.sh')
+  } else {
+    sh('echo Do nothing')
   }
 }
