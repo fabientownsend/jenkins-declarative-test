@@ -32,9 +32,7 @@ pipeline {
     }
 
     stage('Optional Steps: deploy to dev') {
-      steps {
-        deployToDev()
-      }
+      steps { deployToDev() }
     }
 
     stage('approval: stage') {
@@ -62,7 +60,7 @@ pipeline {
   }
 }
 
-def deployToDev() {
+def deployToDev() { // it does not need script {} as it's an external function
   env.RELEASE_SCOPE = input(
       id: 'userInput', message: 'Deploy to dev?', parameters: [
       [
