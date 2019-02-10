@@ -38,7 +38,7 @@ pipeline {
     stage('approval: stage') {
       steps {
         script {
-          timeout(5) {
+          timeout(time: 10, unit: 'SECONDS') {
             input "Deploy to stage?"
           }
         }
@@ -57,6 +57,8 @@ pipeline {
         sh label: 'deploy', script: 'npm run deploy'
       }
     }
+
+    // could to the e2e testing on stage
   }
 }
 
