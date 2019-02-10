@@ -30,24 +30,31 @@ pipeline {
         }
       }
     }
-    stage('approval: dev') {
+
+    stage('Optional Steps: deploy to dev') {
+      steps {
+        deployToDev()
+      }
+    }
+
+    stage('approval: stage') {
       steps {
         script {
           timeout(5) {
-            input "Deploy to dev?"
+            input "Deploy to stage?"
           }
         }
       }
     }
 
-    stage("package: dev") {
+    stage("package: stage") {
       steps {
         sh label: 'build', script: 'npm run build'
       }
     }
 
 
-    stage("deploy: dev") {
+    stage("deploy: stage") {
       steps {
         sh label: 'deploy', script: 'npm run deploy'
       }
@@ -55,3 +62,21 @@ pipeline {
   }
 }
 
+def deployToDev() {
+  env.RELEASE_SCOPE = input(
+      id: 'userInput', message: 'Deploy to dev?', parameters: [
+      [
+      $class: 'BooleanParameterDefinition',
+      defaultValue: 'true',
+      description: 'Environment',
+      name: 'deploy to dev']
+      ]
+  )
+
+  if (env.RELEASE_SCOPE) {
+    sh('echo Do nothing')
+  } else {
+    sh('echo would call ./deploy.sh')
+      // sh('./deploy.sh')
+  }
+}
